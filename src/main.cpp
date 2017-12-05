@@ -43,7 +43,7 @@ char user[] = "";
 char pass[] = "";
 
 /* Use software serial on UNO */
-SoftwareSerial SerialAT(2, 3); // RX, TX
+SoftwareSerial SerialAT(7, 8); // RX, TX
 
 /* Set Tiny GSM modem to use software serial */
 TinyGsm modem(SerialAT);
@@ -66,6 +66,15 @@ BlynkTimer timer;
 
 void setup() 
 {
+    /* Configure output pins and turn them off */
+    /* Make these configurable and move to keyfobInit() */
+    for(uint8_t i = 2; i < 6; i++)
+    {
+        pinMode(i,OUTPUT);
+        digitalWrite(i,0);
+    }
+    
+
     // Debug console
     Serial.begin(9600);
 
@@ -114,14 +123,12 @@ void loop()
  *
  *  @author Squall-DA
  *
- *  @note   N/A
+ *  @note   Virtual pin 1 controls the remote start on the keyfob
  *
  */
 BLYNK_WRITE(V1)
 {
-    int16_t ubPinV1 = param.asInt();
-
-    if( ubPinV1 == true )
+    if( param.asInt() )
     {
         
     }
