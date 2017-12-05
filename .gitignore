@@ -1,0 +1,17 @@
+.pioenvs
+.piolibdeps
+.vscode/c_cpp_properties.json
+
+
+#Build Results
+*.o
+*.d
+*.eep
+*.elf
+*.hex
+*.map
+*.srec
+*.lib
+
+#Ignore vscode files
+.vscode/
