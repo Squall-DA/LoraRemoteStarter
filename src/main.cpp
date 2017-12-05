@@ -108,7 +108,7 @@ void loop()
  *  @fn     void BLYNK_WRITE(VI)
  *
  *  @brief  #define from Blynk library. Called whenever virtual pin 1
- *          is written too by the Blynk widget. 
+ *          is written to by the Blynk widget. 
  *  
  *  @return N/A
  *
@@ -119,5 +119,10 @@ void loop()
  */
 BLYNK_WRITE(V1)
 {
-    int16_t pinValue = param.asInt();
+    int16_t ubPinV1 = param.asInt();
+
+    if( ubPinV1 == true )
+    {
+        
+    }
 }
