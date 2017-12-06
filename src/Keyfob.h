@@ -18,6 +18,28 @@
  *========================================================================* 
  */
 
+/**
+ *  @class  Keyfob
+ *
+ *  @brief  Object to interface with a vehicles remote keyfob
+ *
+ *  @author Squall-DA
+ *
+ *  @note   NA
+ *
+ */
+class Keyfob 
+{
+    uint8_t ubStartPin, ubUnlockPin, ubLockPin;
+    bool fStarterOnly = false;
+public:
+    Keyfob(uint8_t);
+    Keyfob(uint8_t, uint8_t, uint8_t);
+    void vStartVehicle();
+    void vUnlockVehicle();
+    void vLockVehicle();
+    void vRun(); 
+} /* End of Keyfob class */
 /*========================================================================* 
  *  SECTION - extern global variables (minimize global variable use)      * 
  *========================================================================* 

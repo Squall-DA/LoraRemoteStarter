@@ -16,6 +16,7 @@
 #include <TinyGsmClient.h>
 #include <BlynkSimpleSIM800.h>
 #include <SoftwareSerial.h>
+#include "Keyfob.h"
 
 
 /*========================================================================* 
@@ -66,15 +67,8 @@ BlynkTimer timer;
 
 void setup() 
 {
-    /* Configure output pins and turn them off */
-    /* Make these configurable and move to keyfobInit() */
-    for(uint8_t i = 2; i < 6; i++)
-    {
-        pinMode(i,OUTPUT);
-        digitalWrite(i,0);
-    }
+    Keyfob Keyfob(3,4,5);
     
-
     // Debug console
     Serial.begin(9600);
 

@@ -11,10 +11,6 @@
 #ifndef MAIN_MODULE
 #define MAIN_MODULE 1
 
-/*========================================================================* 
- *  SECTION - Global definitions 
- *========================================================================* 
- */
 
 /* Comment this out to disable prints and save space */
 #define BLYNK_PRINT Serial
@@ -25,14 +21,6 @@
 // If you want override this value, uncomment and set this option:
 //#define BLYNK_HEARTBEAT 30
 
-/*========================================================================* 
- *  SECTION - extern global variables (minimize global variable use)      * 
- *========================================================================* 
- */
 
-/*========================================================================* 
- *  SECTION - extern global functions                                     * 
- *========================================================================* 
- */
 
 #endif  /* #ifndef MAIN_MODULE */
