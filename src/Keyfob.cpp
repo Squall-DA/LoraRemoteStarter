@@ -9,9 +9,7 @@
  *  @remark Project Tree:   BlynkRemoteStarter
  * 
  */
-
-#include <stdint.h>
-#include <Arduino.h>
+#include "CBTimer.h"
 
 #include "Keyfob.h"
 
@@ -76,4 +74,23 @@ Keyfob::Keyfob(uint8_t ubStarter, uint8_t ubUnlock, uint8_t ubLock)
     digitalWrite(ubUnlockPin,0);
     pinMode(ubLockPin, OUTPUT);
     digitalWrite(ubLockPin,0);
+}
+
+/**
+ *  @fn     void vStartVehicle()
+ *
+ *  @brief  Starts the vehicle.
+ *
+ *  @author Squall-DA
+ *
+ *  @note   This function uses a state machine combined with 
+ *          a timer to create pin output cycle. This should
+ *          be modified to match the button presses required
+ *          on the keyfob to start the vehicle (double press
+ *          start key, press lock then hold start, etc)
+ *
+ */
+void Keyfob::vStartVehicle()
+{
+
 }

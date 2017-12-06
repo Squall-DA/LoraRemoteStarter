@@ -1,7 +1,8 @@
 /** 
- *  @file                   Keyfob.cpp
- *  @brief                  Handles all functions that interface with the
- *                          kefob
+ *  @file                   CBTimer.h
+ *  @brief                  Creates a basic timer using the Arduino loop 
+ *                          and millis function.
+ * 
  *  @copyright              2017 Squall-DA
  *  @date                   12/04/2017
  * 
@@ -12,8 +13,8 @@
 #include <stdint.h>
 #include <Arduino.h>
 
-#ifndef KEYFOB_MODULE
-#define KEYFOB_MODULE 1
+#ifndef CBTIMER_MODULE
+#define CBTIMER_MODULE 1
 
 /*========================================================================* 
  *  SECTION - Global definitions 
@@ -21,28 +22,23 @@
  */
 
 /**
- *  @class  Keyfob
+ *  @class  CBTimer
  *
- *  @brief  Object to interface with a vehicles remote keyfob
+ *  @brief  Class to create a timer object.
  *
  *  @author Squall-DA
  *
  *  @note   NA
  *
  */
-class Keyfob 
+class CBTimer
 {
-    uint8_t ubStartPin, ubUnlockPin, ubLockPin;
-    bool fStarterOnly = false;
-    CBTimer cbTimer;
+    void (* vCallBackFunction)();
+    uint32_t ulTimeOut, ulStartTime;
 public:
-    Keyfob(uint8_t);
-    Keyfob(uint8_t, uint8_t, uint8_t);
-    void vStartVehicle();
-    void vUnlockVehicle();
-    void vLockVehicle();
-    void vRun(); 
-}; /* End of Keyfob class */
+    void vConfigure(uint32_t, void (*vCallback)());
+    void vRun();
+}; /* End of CBTimer class */
 
 
 /*========================================================================* 
@@ -55,4 +51,4 @@ public:
  *========================================================================* 
  */
 
-#endif  /* #ifndef KEYFOB_MODULE */
+#endif  /* #ifndef CBTIMER_MODULE */
