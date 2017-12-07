@@ -69,11 +69,11 @@ Keyfob::Keyfob(uint8_t ubStarter, uint8_t ubUnlock, uint8_t ubLock)
 
     /* Configure the pins as output */
     pinMode(ubStartPin, OUTPUT);
-    digitalWrite(ubStartPin,0);
+    digitalWrite(ubStartPin,HIGH);
     pinMode(ubUnlockPin, OUTPUT);
-    digitalWrite(ubUnlockPin,0);
+    digitalWrite(ubUnlockPin,HIGH);
     pinMode(ubLockPin, OUTPUT);
-    digitalWrite(ubLockPin,0);
+    digitalWrite(ubLockPin,HIGH);
 }
 
 /**
@@ -92,5 +92,29 @@ Keyfob::Keyfob(uint8_t ubStarter, uint8_t ubUnlock, uint8_t ubLock)
  */
 void Keyfob::vStartVehicle()
 {
+    static STARTER_SEQ tStartState = BUTTON_PRESS_1;
 
+    switch (tStartState)
+    {
+        case BUTTON_PRESS_1:
+            digitalWrite(ubStartPin, LOW);
+            cbTimer.vConfigure(BTN_PRESS_TIME, this->vStartVehicle );
+            tStartState = PAUSE;
+            break;
+        case PAUSE:
+            digitalWrite(ubStartPin, HIGH);
+            cbTimer.vConfigure(PAUSE_TIME, this->vStartVehicle );
+            tStartState = BUTTON_PRESS_2;
+            break;
+        case BUTTON_PRESS_2:
+            digitalWrite(ubStartPin, LOW);
+            cbTimer.vConfigure(BTN_PRESS_TIME, this->vStartVehicle );
+            tStartState = START_FINISHED;
+            break;
+        case START_FINISHED:
+        default:
+            digitalWrite(ubStartPin, HIGH);
+            tStartState = BUTTON_PRESS_1;
+            break;
+    }
 }
