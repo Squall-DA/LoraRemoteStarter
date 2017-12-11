@@ -33,10 +33,12 @@
  */
 class CBTimer
 {
-    void (* vCallBackFunction)();
+    void (* vCallBackFunctionC)(), (* vCallBackFunction)(void *);
     uint32_t ulTimeOut, ulStartTime;
+    void * vpObjectPtr = nullptr;
 public:
     void vConfigure(uint32_t, void (*vCallback)());
+    void vConfigure(uint32_t, void *,void (*vCallback)(void *) );
     void vRun();
 }; /* End of CBTimer class */
 

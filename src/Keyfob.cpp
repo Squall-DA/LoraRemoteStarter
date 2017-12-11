@@ -9,7 +9,6 @@
  *  @remark Project Tree:   BlynkRemoteStarter
  * 
  */
-#include "CBTimer.h"
 
 #include "Keyfob.h"
 
@@ -93,22 +92,22 @@ Keyfob::Keyfob(uint8_t ubStarter, uint8_t ubUnlock, uint8_t ubLock)
 void Keyfob::vStartVehicle()
 {
     static STARTER_SEQ tStartState = BUTTON_PRESS_1;
-
+    
     switch (tStartState)
     {
         case BUTTON_PRESS_1:
             digitalWrite(ubStartPin, LOW);
-            cbTimer.vConfigure(BTN_PRESS_TIME, this->vStartVehicle );
+            cbTimer.vConfigure(BTN_PRESS_TIME, this, vStartCallback );
             tStartState = PAUSE;
             break;
         case PAUSE:
             digitalWrite(ubStartPin, HIGH);
-            cbTimer.vConfigure(PAUSE_TIME, this->vStartVehicle );
+            cbTimer.vConfigure(PAUSE_TIME, this, vStartCallback );
             tStartState = BUTTON_PRESS_2;
             break;
         case BUTTON_PRESS_2:
             digitalWrite(ubStartPin, LOW);
-            cbTimer.vConfigure(BTN_PRESS_TIME, this->vStartVehicle );
+            cbTimer.vConfigure(BTN_PRESS_TIME, this, vStartCallback );
             tStartState = START_FINISHED;
             break;
         case START_FINISHED:
@@ -118,3 +117,20 @@ void Keyfob::vStartVehicle()
             break;
     }
 }
+
+/**
+ *  @fn     void vStartCallback(void * vpObject)
+ *
+ *  @brief  Static wrapper for Keyfob::vStartVehicle()
+ *
+ *  @param[in] vpObject void pointer to the keyfob object
+ * 
+ *  @author Squall-DA
+ *
+ *  @note   N/A
+ *
+ */
+void Keyfob::vStartCallback(void * vpObject)
+{
+    ((Keyfob *) vpObject)->vStartVehicle();
+} 

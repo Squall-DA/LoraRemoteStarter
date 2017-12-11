@@ -35,15 +35,44 @@
  *
  *  @brief  Configures the timer object. ulTime configures the 
  *          timeout before the callback function is called.
+ * 
+ *  @param[in] ulTime timeout until the callback is called
+ *  @param[in] vCallBack pointer to the function to be called
  *
  *  @author Squall-DA
  *
- *  @note   N/A
+ *  @note   Use this instance to interface with static member
+ *          functions or C functions.
  *
  */
 void CBTimer::vConfigure(uint32_t ulTime, void (*vCallBack)())
 {
+    vCallBackFunctionC = vCallBack;
+    ulTimeOut = ulTime;
+    ulStartTime = millis();
+}
+
+/**
+ *  @fn     void vConfigure(uint32_t, void *, void function pointer (void *))
+ *
+ *  @brief  Configures the timer object. ulTime configures the 
+ *          timeout before the callback function is called.
+ * 
+ *  @param[in] ulTime timeout until the callback is called
+ *  @param[in] vpObject void pointer to the object of the callback function
+ *  @param[in] vCallBack pointer to the function to be called
+ *
+ *  @author Squall-DA
+ *
+ *  @note   The callback function of this overload has a void pointer
+ *          that is used to point to an object instance. Use this instance
+ *          to interface with non static member function wrappers.
+ *
+ */
+void CBTimer::vConfigure(uint32_t ulTime, void * vpObject, void (*vCallBack)(void *))
+{
     vCallBackFunction = vCallBack;
+    vpObjectPtr = vpObject;
     ulTimeOut = ulTime;
     ulStartTime = millis();
 }
@@ -66,6 +95,14 @@ void CBTimer::vRun()
 
     if(ulDeltaTime > ulTimeOut)
     {
-        vCallBackFunction();
+        if(vpObjectPtr == nullptr)
+        {
+            vCallBackFunctionC();
+        }
+        else
+        {
+            vCallBackFunction(vpObjectPtr);
+        }
+        vpObjectPtr = nullptr;
     }
 }

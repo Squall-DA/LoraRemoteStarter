@@ -11,6 +11,7 @@
  */
 #include <stdint.h>
 #include <Arduino.h>
+#include "CBTimer.h"
 
 #ifndef KEYFOB_MODULE
 #define KEYFOB_MODULE 1
@@ -39,8 +40,11 @@ public:
     Keyfob(uint8_t);
     Keyfob(uint8_t, uint8_t, uint8_t);
     void vStartVehicle();
+    static void vStartCallback(void *);
     void vUnlockVehicle();
+    static void vUnlockCallback(void *);
     void vLockVehicle();
+    static void vLockCallback(void *);
     void vRun(); 
 }; /* End of Keyfob class */
 
