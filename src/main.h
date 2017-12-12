@@ -17,6 +17,10 @@
 
 #define TINY_GSM_MODEM_SIM900
 
+#define START_PIN    3
+#define UNLOCK_PIN   4
+#define LOCK_PIN     5
+
 // Default heartbeat interval for GSM is 60
 // If you want override this value, uncomment and set this option:
 //#define BLYNK_HEARTBEAT 30

@@ -49,7 +49,10 @@ SoftwareSerial SerialAT(7, 8); // RX, TX
 /* Set Tiny GSM modem to use software serial */
 TinyGsm modem(SerialAT);
 
-BlynkTimer timer;
+/* Define the vehicle keyfob object 
+*  I am using the lock, unlock, and start keyfob
+*/
+Keyfob ramKeyfob(START_PIN,UNLOCK_PIN,LOCK_PIN);
 
 
 /**
@@ -66,9 +69,7 @@ BlynkTimer timer;
  */
 
 void setup() 
-{
-    Keyfob Keyfob(3,4,5);
-    
+{ 
     // Debug console
     Serial.begin(9600);
 
@@ -105,10 +106,33 @@ void setup()
 void loop() 
 {
     Blynk.run();
+    ramKeyfob.vRun();
 }
 
 /**
- *  @fn     void BLYNK_WRITE(VI)
+ *  @fn     void BLYNK_WRITE(V0)
+ *
+ *  @brief  #define from Blynk library. Called whenever Virtual pin 0
+ *          is written to by the Blynk widget. 
+ *  
+ *  @return N/A
+ *
+ *  @author Squall-DA
+ *
+ *  @note   Virtual pin 0 controls the remote start on the keyfob
+ *
+ */
+BLYNK_WRITE(V0)
+{
+    if( param.asInt() )
+    {
+        ramKeyfob.vStartVehicle();
+        Blynk.virtualWrite(V0,0);
+    }
+}
+
+/**
+ *  @fn     void BLYNK_WRITE(V1)
  *
  *  @brief  #define from Blynk library. Called whenever virtual pin 1
  *          is written to by the Blynk widget. 
@@ -117,13 +141,36 @@ void loop()
  *
  *  @author Squall-DA
  *
- *  @note   Virtual pin 1 controls the remote start on the keyfob
+ *  @note   Virtual pin 1 controls the lock on the keyfob
  *
  */
 BLYNK_WRITE(V1)
 {
     if( param.asInt() )
     {
-        
+        ramKeyfob.vLockVehicle();
+        Blynk.virtualWrite(V1,0);
+    }
+}
+
+/**
+ *  @fn     void BLYNK_WRITE(V2)
+ *
+ *  @brief  #define from Blynk library. Called whenever virtual pin 2
+ *          is written to by the Blynk widget. 
+ *  
+ *  @return N/A
+ *
+ *  @author Squall-DA
+ *
+ *  @note   Virtual pin 2 controls the unlock on the keyfob
+ *
+ */
+BLYNK_WRITE(V2)
+{
+    if( param.asInt() )
+    {
+        ramKeyfob.vUnlockVehicle();
+        Blynk.virtualWrite(V2,0);
     }
 }

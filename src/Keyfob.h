@@ -49,16 +49,16 @@ public:
 }; /* End of Keyfob class */
 
 
-typedef enum Starter_Seq
+typedef enum Button_Press_Seq
 {
     BUTTON_PRESS_1
     ,PAUSE
     ,BUTTON_PRESS_2
-    ,START_FINISHED 
-}STARTER_SEQ;
+    ,BUTTON_SEQ_FINISHED 
+}BUTTON_PRESS_SEQ;
 
 #define BTN_PRESS_TIME 50 /* ms */
-#define PAUSE_TIME     25 /* ms */
+#define PAUSE_TIME     50 /* ms */
 
 /*========================================================================* 
  *  SECTION - extern global variables (minimize global variable use)      * 

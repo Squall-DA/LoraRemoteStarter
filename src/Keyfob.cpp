@@ -91,8 +91,9 @@ Keyfob::Keyfob(uint8_t ubStarter, uint8_t ubUnlock, uint8_t ubLock)
  */
 void Keyfob::vStartVehicle()
 {
-    static STARTER_SEQ tStartState = BUTTON_PRESS_1;
+    static BUTTON_PRESS_SEQ tStartState = BUTTON_PRESS_1;
     
+    /* 2008 Dodge Ram requires double press of the start button */
     switch (tStartState)
     {
         case BUTTON_PRESS_1:
@@ -108,9 +109,9 @@ void Keyfob::vStartVehicle()
         case BUTTON_PRESS_2:
             digitalWrite(ubStartPin, LOW);
             cbTimer.vConfigure(BTN_PRESS_TIME, this, vStartCallback );
-            tStartState = START_FINISHED;
+            tStartState = BUTTON_SEQ_FINISHED;
             break;
-        case START_FINISHED:
+        case BUTTON_SEQ_FINISHED:
         default:
             digitalWrite(ubStartPin, HIGH);
             tStartState = BUTTON_PRESS_1;
@@ -134,3 +135,125 @@ void Keyfob::vStartCallback(void * vpObject)
 {
     ((Keyfob *) vpObject)->vStartVehicle();
 } 
+
+/**
+ *  @fn     void vLockVehicle()
+ *
+ *  @brief  Locks the vehicle.
+ *
+ *  @author Squall-DA
+ *
+ *  @note   This function uses a state machine combined with 
+ *          a timer to create pin output cycle. This should
+ *          be modified to match the button presses required
+ *          on the keyfob to lock the vehicle (single press, 
+ *          double press, etc)
+ *
+ */
+void Keyfob::vLockVehicle()
+{
+    static BUTTON_PRESS_SEQ tLockState = BUTTON_PRESS_1;
+    
+    /* Single press of lock button */
+    switch (tLockState)
+    {
+        case BUTTON_PRESS_1:
+            digitalWrite(ubLockPin, LOW);
+            cbTimer.vConfigure(BTN_PRESS_TIME, this, vLockCallback );
+            tLockState = BUTTON_SEQ_FINISHED;
+            
+            break;
+        case BUTTON_SEQ_FINISHED:
+        default:
+            digitalWrite(ubLockPin, HIGH);
+            tLockState = BUTTON_PRESS_1;
+            break;
+    }
+}
+
+/**
+ *  @fn     void vLockCallback(void * vpObject)
+ *
+ *  @brief  Static wrapper for Keyfob::vLockVehicle()
+ *
+ *  @param[in] vpObject void pointer to the keyfob object
+ * 
+ *  @author Squall-DA
+ *
+ *  @note   N/A
+ *
+ */
+void Keyfob::vLockCallback(void * vpObject)
+{
+    ((Keyfob *) vpObject)->vLockVehicle();
+} 
+
+/**
+ *  @fn     void vUnlockVehicle()
+ *
+ *  @brief  Unlocks the vehicle.
+ *
+ *  @author Squall-DA
+ *
+ *  @note   This function uses a state machine combined with 
+ *          a timer to create pin output cycle. This should
+ *          be modified to match the button presses required
+ *          on the keyfob to unlock the vehicle (single press, 
+ *          double press, etc)
+ *
+ */
+void Keyfob::vUnlockVehicle()
+{
+    static BUTTON_PRESS_SEQ tUnlockState = BUTTON_PRESS_1;
+    
+    /* Single press of unlock only unlocks the driver door */
+    switch (tUnlockState)
+    {
+        case BUTTON_PRESS_1:
+            digitalWrite(ubUnlockPin, LOW);
+            cbTimer.vConfigure(BTN_PRESS_TIME, this, vUnlockCallback );
+            tUnlockState = BUTTON_SEQ_FINISHED;
+            
+            break;
+        case BUTTON_SEQ_FINISHED:
+        default:
+            digitalWrite(ubUnlockPin, HIGH);
+            tUnlockState = BUTTON_PRESS_1;
+            break;
+    }
+}
+
+/**
+ *  @fn     void vUnlockCallback(void * vpObject)
+ *
+ *  @brief  Static wrapper for Keyfob::vUnlockVehicle()
+ *
+ *  @param[in] vpObject void pointer to the keyfob object
+ * 
+ *  @author Squall-DA
+ *
+ *  @note   N/A
+ *
+ */
+void Keyfob::vUnlockCallback(void * vpObject)
+{
+    ((Keyfob *) vpObject)->vUnlockVehicle();
+} 
+
+/**
+ *  @fn     void vRun()
+ *
+ *  @brief  Service routine for the Keyfob class
+ *
+ *  @author Squall-DA
+ *
+ *  @note   This service routine currently only runs
+ *          the CBTimer service routine to update the
+ *          timer clock.
+ *
+ */
+void Keyfob::vRun()
+{
+    /* Run the Callback timer routine */
+    cbTimer.vRun();
+}
