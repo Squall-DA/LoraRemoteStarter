@@ -5,7 +5,7 @@
  *  @date                   12/04/2017
  * 
  *  @remark Author:         Squall-DA
- *  @remark Project Tree:   BlynkRemoteStarter
+ *  @remark Project Tree:   LoraRemoteStarter
  * 
  */
 
@@ -14,6 +14,8 @@
 
 #include <stdint.h>
 #include "Keyfob.h"
+#include "LoRa.h"
+#include "SSD1306.h"
 
 
 /*========================================================================* 
@@ -36,6 +38,9 @@
 */
 Keyfob ramKeyfob(START_PIN,UNLOCK_PIN,LOCK_PIN);
 
+/* Setup the OLED display at address 0x3c using standard SDA and SCL */
+SSD1306 oledDisplay(0x3c,SDA,SCL);
+
 
 /**
  *  @fn     void setup()
@@ -54,7 +59,7 @@ void setup()
 { 
     // Debug console
     Serial.begin(115200);
-
+    
     delay(10);
 
     delay(3000);

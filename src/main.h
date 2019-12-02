@@ -12,19 +12,33 @@
 #define MAIN_MODULE 1
 
 
-/* Comment this out to disable prints and save space */
-#define BLYNK_PRINT Serial
+/*========================================================================* 
+ *  SECTION - Global definitions 
+ *========================================================================* 
+ */
+/* Starter pin connections */
+#define START_PIN    36
+#define UNLOCK_PIN   39
+#define LOCK_PIN     34
 
-#define TINY_GSM_MODEM_SIM900
+/* LoRa Pin connections */
+#define LoRa_SCK     5    // GPIO5  -- SX1278's SCK
+#define LoRa_MISO    19   // GPIO19 -- SX1278's MISO
+#define LoRa_MOSI    27   // GPIO27 -- SX1278's MOSI
+#define LoRa_CS      18   // GPIO18 -- SX1278's CS
+#define LoRa_RST     14   // GPIO14 -- SX1278's RESET
+#define LoRa_DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
+#define LoRa_BAND    904E6
 
-#define START_PIN    3
-#define UNLOCK_PIN   4
-#define LOCK_PIN     5
+/*========================================================================* 
+ *  SECTION - extern global variables (minimize global variable use)      * 
+ *========================================================================* 
+ */
 
-// Default heartbeat interval for GSM is 60
-// If you want override this value, uncomment and set this option:
-//#define BLYNK_HEARTBEAT 30
-
+/*========================================================================* 
+ *  SECTION - extern global functions                                     * 
+ *========================================================================* 
+ */
 
 
 #endif  /* #ifndef MAIN_MODULE */
