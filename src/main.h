@@ -17,16 +17,16 @@
  *========================================================================* 
  */
 /* Starter pin connections */
-#define START_PIN    36
-#define UNLOCK_PIN   39
-#define LOCK_PIN     34
+#define START_PIN    25
+#define UNLOCK_PIN   32
+#define LOCK_PIN     33
 
 /* LoRa Pin connections */
 #define LoRa_SCK     5    // GPIO5  -- SX1278's SCK
 #define LoRa_MISO    19   // GPIO19 -- SX1278's MISO
 #define LoRa_MOSI    27   // GPIO27 -- SX1278's MOSI
 #define LoRa_CS      18   // GPIO18 -- SX1278's CS
-#define LoRa_RST     14   // GPIO14 -- SX1278's RESET
+#define LoRa_RST     23  // GPIO14 -- SX1278's RESET
 #define LoRa_DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
 #define LoRa_BAND    904E6
 
