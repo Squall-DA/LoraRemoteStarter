@@ -93,16 +93,20 @@ void CBTimer::vRun()
 
     ulDeltaTime = millis() - ulStartTime;
 
-    if(ulDeltaTime > ulTimeOut)
+    if(nullptr != vCallBackFunction)
     {
-        if(vpObjectPtr == nullptr)
+        if( (ulDeltaTime > ulTimeOut) 
+            && (0 != ulTimeOut))
         {
-            vCallBackFunctionC();
+            if(vpObjectPtr == nullptr)
+            {
+                    vCallBackFunctionC();
+            }
+            else
+            {
+                vCallBackFunction(vpObjectPtr);
+            }
+            vpObjectPtr = nullptr;
         }
-        else
-        {
-            vCallBackFunction(vpObjectPtr);
-        }
-        vpObjectPtr = nullptr;
     }
 }
