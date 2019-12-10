@@ -30,6 +30,16 @@
 #define LoRa_DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
 #define LoRa_BAND    904E6
 
+#define UUID_LENGTH  16  /* Length of UUIDs in bytes */
+#define LoRa_CMD_START UUID_LENGTH /* LoRa command starts at byte UUID_LENGTH (count from 0) */
+
+typedef enum
+{   
+    LoRa_VEH_CMD_START
+    ,LoRa_VEH_CMD_LOCK
+    ,LoRa_VEH_CMD_UNLOCK
+}LoRa_VEHICLE_CMDS;
+
 /*========================================================================* 
  *  SECTION - extern global variables (minimize global variable use)      * 
  *========================================================================* 

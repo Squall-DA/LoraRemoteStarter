@@ -13,6 +13,7 @@
 #include "main.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "Keyfob.h"
 #include "LoRa.h"
 #include "SSD1306.h"
@@ -29,12 +30,21 @@
  */
 
 void vLoRa_rxMode(void);
+void vLoRa_txMode(void);
 void vLoRaOnReceiveMsg(int swPacketSize);
+void gvProcessLoRaMessage(char * const kpszLoraMessage, uint8_t ubMsgSize);
 
 /*========================================================================* 
  *  SECTION - Local variables                                             * 
  *========================================================================* 
  */
+
+/**
+ * @brief The UUID for this device. Stored as individual
+ *        chars to save space.
+ * 
+ */
+const char kpszRemoteStartUuid[] = {0x6e,0x2c,0xab,0x63,0xe4,0x64,0x4f,0x57,0xa0,0xe7,0x70,0x6a,0x98,0xe3,0x1a,0xc3};
 
 /* Define the vehicle keyfob object 
 *  I am using the lock, unlock, and start keyfob
@@ -51,6 +61,7 @@ const uint32_t kulFrequency = 915E6;
 const uint8_t kubLoraCsPin = 18;
 const uint8_t kubLoraIrqPin = 26;
 const uint8_t kubLoraRstPin = 0;  //Throwaway pin Rst not actually connected.
+
 
 
 /**
@@ -143,10 +154,97 @@ void vLoRa_rxMode(void){
     LoRa.receive();                       // set receive mode
 }
 
+/**
+ * @fn  void LoRa_txMode(void)
+ * 
+ * @brief Sets the node back to tx mode 
+ * 
+ */
+void vLoRa_txMode(void){
+  LoRa.idle();                          // set standby mode
+  LoRa.disableInvertIQ();               // normal mode
+}
+
+/**
+ * @fn    void vLoRaOnReceiveMsg(int swPacketSize)
+ * 
+ * @brief This function is a callback that is called any time
+ *        the LoRa radio receives a message.
+ * 
+ * @param swPacketSize - size of the LoRa packet. 
+ */
 void vLoRaOnReceiveMsg(int swPacketSize)
 {
+    /* Create temporary string the size of the message */
+    char * pszMsgString = nullptr;
+    uint8_t ubCount = 0;
+
+    if(20 >= swPacketSize)
+    {
+        pszMsgString = (char*)malloc(swPacketSize);
+    }
+    
+
     oledDisplay.clear();
     oledDisplay.drawString(0,0, "LoRa msg received.");
     oledDisplay.drawString(0,0, "Size: " + swPacketSize);
+    
+    for(ubCount=0; 
+        (ubCount < swPacketSize) && LoRa.available() && (nullptr != pszMsgString);
+        ubCount++)
+    {
+        pszMsgString[ubCount] = LoRa.read();
+    }
+
+    /* Process the message then free the message buffer */
+    if(nullptr != pszMsgString)
+    {
+        gvProcessLoRaMessage(pszMsgString, swPacketSize);
+        free(pszMsgString);
+    }
+
     oledDisplay.display();
+}
+
+
+void gvProcessLoRaMessage(char * const kpszLoraMessage, uint8_t ubMsgSize)
+{
+    boolean fUuidMatch = false;
+
+    /* Compare the first UUID_LENGTH bytes */
+    fUuidMatch = !strncmp(kpszRemoteStartUuid, kpszLoraMessage, UUID_LENGTH);
+
+    if(fUuidMatch)
+    {
+        switch(kpszLoraMessage[UUID_LENGTH])
+        {
+            case LoRa_VEH_CMD_START:
+                ramKeyfob.vStartVehicle();
+                oledDisplay.drawString(0,15,"START");
+                break;
+
+            case LoRa_VEH_CMD_LOCK:
+                ramKeyfob.vLockVehicle();
+                oledDisplay.drawString(0,15,"LOCK");
+                break;
+
+            case LoRa_VEH_CMD_UNLOCK:
+                ramKeyfob.vUnlockVehicle();
+                oledDisplay.drawString(0,15,"UNLOCK");
+                break;
+
+            default:
+                break;
+        }
+
+        /* Print LoRa Status */
+        oledDisplay.drawString(0,30, "RSSI " + String(LoRa.packetRssi(), DEC));
+
+        /*Send Response Message */
+        vLoRa_txMode();
+        LoRa.beginPacket();
+        LoRa.print(kpszLoraMessage);
+        LoRa.endPacket();
+        vLoRa_rxMode();
+    }
 }
