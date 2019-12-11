@@ -93,20 +93,19 @@ void CBTimer::vRun()
 
     ulDeltaTime = millis() - ulStartTime;
 
-    if(nullptr != vCallBackFunction)
+    if( (ulDeltaTime > ulTimeOut) 
+        && (0 != ulTimeOut))
     {
-        if( (ulDeltaTime > ulTimeOut) 
-            && (0 != ulTimeOut))
+        ulTimeOut = 0;
+        if(vCallBackFunctionC != nullptr)
         {
-            if(vpObjectPtr == nullptr)
-            {
-                    vCallBackFunctionC();
-            }
-            else
-            {
-                vCallBackFunction(vpObjectPtr);
-            }
-            vpObjectPtr = nullptr;
+            Serial.println("C");
+            //vCallBackFunctionC();
+        }
+        else if(nullptr != vCallBackFunction)
+        {
+            Serial.println("C++");
+            vCallBackFunction(vpObjectPtr);
         }
     }
 }

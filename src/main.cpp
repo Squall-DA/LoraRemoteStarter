@@ -40,11 +40,11 @@ void gvProcessLoRaMessage(char * const kpszLoraMessage, uint8_t ubMsgSize);
  */
 
 /**
- * @brief The UUID for this device. Stored as individual
+ * @brief The NULL terminated UUID for this device. Stored as individual
  *        chars to save space.
  * 
  */
-const char kpszRemoteStartUuid[] = {0x6e,0x2c,0xab,0x63,0xe4,0x64,0x4f,0x57,0xa0,0xe7,0x70,0x6a,0x98,0xe3,0x1a,0xc3};
+const char kpszRemoteStartUuid[] = {0x6e,0x2c,0xab,0x63,0xe4,0x64,0x4f,0x57,0xa0,0xe7,0x70,0x6a,0x98,0xe3,0x1a,0xc3,0x00};
 
 /* Define the vehicle keyfob object 
 *  I am using the lock, unlock, and start keyfob
@@ -114,7 +114,7 @@ void setup()
       oledDisplay.display(); 
     }
     
-    LoRa.onReceive(vLoRaOnReceiveMsg);
+    //LoRa.onReceive(vLoRaOnReceiveMsg);
     vLoRa_rxMode();
 }
 
@@ -134,6 +134,14 @@ void setup()
 void loop() 
 {
     ramKeyfob.vRun();
+
+    int packetSize = LoRa.parsePacket();
+    if (packetSize) 
+    { 
+        vLoRaOnReceiveMsg(packetSize);  
+    }
+
+    delay(10);
 }
 
 /**
@@ -179,22 +187,24 @@ void vLoRaOnReceiveMsg(int swPacketSize)
     char * pszMsgString = nullptr;
     uint8_t ubCount = 0;
 
-    if(20 >= swPacketSize)
+    if(30 >= swPacketSize)
     {
-        pszMsgString = (char*)malloc(swPacketSize);
+        pszMsgString = (char*)malloc(swPacketSize + 1);
     }
     
 
     oledDisplay.clear();
     oledDisplay.drawString(0,0, "LoRa msg received.");
-    oledDisplay.drawString(0,0, "Size: " + swPacketSize);
+    oledDisplay.drawString(0,15, "Size: " + String(swPacketSize, DEC));
     
     for(ubCount=0; 
         (ubCount < swPacketSize) && LoRa.available() && (nullptr != pszMsgString);
         ubCount++)
     {
         pszMsgString[ubCount] = LoRa.read();
+        Serial.print(String(pszMsgString[ubCount], HEX));
     }
+    Serial.println("");
 
     /* Process the message then free the message buffer */
     if(nullptr != pszMsgString)
@@ -220,17 +230,17 @@ void gvProcessLoRaMessage(char * const kpszLoraMessage, uint8_t ubMsgSize)
         {
             case LoRa_VEH_CMD_START:
                 ramKeyfob.vStartVehicle();
-                oledDisplay.drawString(0,15,"START");
+                oledDisplay.drawString(0,30,"START");
                 break;
 
             case LoRa_VEH_CMD_LOCK:
                 ramKeyfob.vLockVehicle();
-                oledDisplay.drawString(0,15,"LOCK");
+                oledDisplay.drawString(0,30,"LOCK");
                 break;
 
             case LoRa_VEH_CMD_UNLOCK:
                 ramKeyfob.vUnlockVehicle();
-                oledDisplay.drawString(0,15,"UNLOCK");
+                oledDisplay.drawString(0,30,"UNLOCK");
                 break;
 
             default:
@@ -238,7 +248,7 @@ void gvProcessLoRaMessage(char * const kpszLoraMessage, uint8_t ubMsgSize)
         }
 
         /* Print LoRa Status */
-        oledDisplay.drawString(0,30, "RSSI " + String(LoRa.packetRssi(), DEC));
+        oledDisplay.drawString(0,45, "RSSI " + String(LoRa.packetRssi(), DEC));
 
         /*Send Response Message */
         vLoRa_txMode();

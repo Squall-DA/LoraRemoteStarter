@@ -58,7 +58,7 @@ typedef enum Button_Press_Seq
 }BUTTON_PRESS_SEQ;
 
 #define BTN_PRESS_TIME 50 /* ms */
-#define PAUSE_TIME     50 /* ms */
+#define PAUSE_TIME     200 /* ms */
 
 /*========================================================================* 
  *  SECTION - extern global variables (minimize global variable use)      * 
